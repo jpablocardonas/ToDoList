@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, signal } from '@angular/core';
+import { Component, importProvidersFrom, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, Validators, CheckboxControlValueAccessor } from '@angular/forms';
 
@@ -33,6 +33,24 @@ export class HomeComponent {
       Validators.required,
     ]
   });
+
+  filter = signal('all');
+  changeFilter(filter: string){
+    this.filter.set(filter);
+  }
+  filtrarTareas = computed(() => {
+    const filter = this.filter();
+    const tasks = this.tasks();
+    if (filter === 'pendientes') {
+      return tasks.filter(task => !task.completed);
+    }
+    if (filter === 'completados') {
+      return tasks.filter(task => task.completed);
+    }
+    return tasks;
+  })
+
+  
 
   agregarTarea(){
     const regex = /^\s+$/;
