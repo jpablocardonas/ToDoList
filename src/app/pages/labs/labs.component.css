@@ -1,0 +1,12 @@
+.container {
+    padding-left: 20px;
+}
+.message-error {
+    background-color: red;
+    color: white;
+    opacity: 0;
+    transition: all linear .5s;
+}
+.message-error.mostrar {
+    opacity: 1;
+}
