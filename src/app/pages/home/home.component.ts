@@ -51,6 +51,7 @@ export class HomeComponent {
   changeFilter(filter: string){
     this.filter.set(filter);
   }
+
   filtrarTareas = computed(() => { 
     const filter = this.filter();
     const tasks = this.tasks();
@@ -85,7 +86,11 @@ export class HomeComponent {
     this.tasks.update((tasks) => tasks.filter((tasks, position) => position !== index));
   }
 
-  completarTarea(index: number){
+  eliminarCompletadas(){
+    this.tasks.update((tasks) => tasks.filter((task) => !task.completed));
+  }
+
+  completarTarea(index: number){+
     this.tasks.update((tasks) => {
       return tasks.map((task, position) => {
           if(position === index) {
@@ -131,5 +136,6 @@ export class HomeComponent {
       })
     })
   }
+
 }
 

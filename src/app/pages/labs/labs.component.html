@@ -3,29 +3,34 @@
     <h2>Bienvenido a mi primera aplicación con {{ tecnologia }}</h2>
     <ul>
         <p>Tenemos {{tasks().length}} tareas.</p>
-        <li *ngFor="let task of tasks()">
+        @for (task of tasks(); track task) {
+        <li>
             {{ task }}
         </li>
+        }
     </ul>
     <hr>
-    <input type="text" (change)="mostrarCambio($event)" [value]="lugar()"/>
+    <input type="text" (change)="mostrarCambio($event)" [value]="lugar()" />
 
     <p>Su nombre es: {{ nombre() }}</p>
 
     <hr />
 
-    <div *ngIf="person.nombre === 'Juan Pablo'; else miBloque"> 
+    @if (person.nombre === 'Juan Pablo') {
+    <div>
         Su nombre es {{person.nombre + ' ' + person.apellido}} y tengo {{person.edad}} años.
     </div>
-    <ng-template #miBloque>
-        Nombre equivocado.
-    </ng-template>
+    } @else {
+
+    Nombre equivocado.
+
+    }
 
     <hr />
 
     <p>
-        <input type="text" [formControl]="nameCtrl"/> <br />
-        <span class="message-error" [class.mostrar] = "nameCtrl.invalid">Nombre iválido</span>
+        <input type="text" [formControl]="nameCtrl" /> <br />
+        <span class="message-error" [class.mostrar]="nameCtrl.invalid">Nombre iválido</span>
     </p>
     <p>
         <input />
