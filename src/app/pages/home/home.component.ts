@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, signal, computed } from '@angular/core';
+import { Component, importProvidersFrom, signal, computed, effect, inject, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, Validators, CheckboxControlValueAccessor } from '@angular/forms';
 
@@ -12,20 +12,32 @@ import { Task } from './../../models/task.model';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  tasks = signal<Task[]>([
-    {
-      id: Date.now(),
-      title: 'Instalar Angular CLI',
-      completed: false,
-      editing: false,
-    },
-    {
-      id: Date.now(),
-      title: 'Crear proyecto',
-      completed: false,
-      editing: false,
-    },
-  ]);
+  tasks = signal<Task[]>([]);
+
+  injector = inject(Injector);
+
+  ngOnInit() {
+    //Aquí se define la lógica para cuando se inicializa la componente
+    //Esta línea busca en el Local Storage las tasks, las obtiene y las guarda en la variable storage.
+    const storage = localStorage.getItem('tasks');
+    //Ahora se valida si storage contiene algo, y lo convierte de string a objeto
+    //Finalmente se guradn estas tareas convertidas en la variable de la componente para ser renderizadas.
+    if(storage){
+      const tasks = JSON.parse(storage);
+      this.tasks.set(tasks);
+    }
+    this.trackTasks();
+  }
+
+  trackTasks() {
+    effect(() => {
+      //Este effect va a trackear la lista de tareas
+      const tasks = this.tasks();
+      //Con la sig línea ya se guarda en el Local Storage
+      //Se puede guardar el array sin problmeas pero no es una buena práctica, por lo que es mejor enviar un JSON de strings
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, { injector: this.injector });
+  }
 
   newTaskCtrl = new FormControl('', {
     nonNullable: true,
@@ -35,10 +47,11 @@ export class HomeComponent {
   });
 
   filter = signal('all');
+
   changeFilter(filter: string){
     this.filter.set(filter);
   }
-  filtrarTareas = computed(() => {
+  filtrarTareas = computed(() => { 
     const filter = this.filter();
     const tasks = this.tasks();
     if (filter === 'pendientes') {
@@ -51,7 +64,6 @@ export class HomeComponent {
   })
 
   
-
   agregarTarea(){
     const regex = /^\s+$/;
 

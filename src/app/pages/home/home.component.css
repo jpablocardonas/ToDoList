@@ -297,6 +297,7 @@
   
   .filters li a:hover {
     border-color: #6e49fe;
+    cursor:pointer;
   }
   
   .filters li a.selected {
